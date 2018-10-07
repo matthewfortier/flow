@@ -1,37 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { NavigationActions } from 'react-navigation';
+import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
 import { Font, AppLoading } from 'expo';
-
-import NavigationService from "./navigator";
-
-import AppNavigator from './components/AppNavigator';
-import NavigationBar from './components/NavigationBar';
-
-class CustomNavigator extends React.Component {
-  static router = {
-    ...AppNavigator.router,
-    getStateForAction: (action, lastState) => {
-      // check for custom actions and return a different navigation state.
-      return AppNavigator.router.getStateForAction(action, lastState);
-    },
-  };
-  componentDidUpdate(lastProps) {
-    // Navigation state has changed from lastProps.navigation.state to this.props.navigation.state
-  }
-  render() {
-    const { navigation } = this.props;
-
-    return (
-      <View style={styles.container}>
-        <AppNavigator navigation={navigation} ref={navigatorRef => {
-          NavigationService.setTopLevelNavigator(navigatorRef);
-        }} />
-        <NavigationBar />
-      </View>
-    );
-  }
-}
+import { BaseNavigator } from "./navigation/BaseNavigator"
+import { Provider } from 'react-redux';
+import { store } from './redux/app-redux';
 
 export default class App extends React.Component {
   state = {
@@ -49,7 +21,11 @@ export default class App extends React.Component {
   render() {
     if (this.state.appReady) {
       return (
-        <CustomNavigator />
+        <Provider store={store}>
+          <View style={styles.container}>
+            <BaseNavigator style={styles.navbar} />
+          </View>
+        </Provider>
       );
     } else {
       return <AppLoading />;
@@ -57,16 +33,25 @@ export default class App extends React.Component {
   }
 }
 
+// Store width in variable
+var height = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "100%",
+    backgroundColor: '#F5F5F5',
   },
-  navbar: {
-    height: 300,
-    width: "100%",
-    backgroundColor: "skyblue"
+  spacer: {
+    height: height * 0.15
+  },
+  modal: {
+    height: "60%",
+    width: "90%",
+    backgroundColor: "#333",
+    position: "absolute",
+    bottom: "20%",
+    left: "5%",
+    borderRadius: 20,
+    zIndex: 999
   }
 });

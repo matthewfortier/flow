@@ -1,13 +1,24 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import FlowText from '../components/FlowText';
+import { connect } from 'react-redux';
+
+const mapStateToProps = (state) => {
+    return {
+        flow: state.flow
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {};
+}
 
 class BreakdownScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
                 <FlowText style={styles.heading}>Welcome back Matthew! Here is your breakdown.</FlowText>
-                <FlowText style={styles.flow}>$302</FlowText>
+                <FlowText style={styles.flow}>${this.props.flow}</FlowText>
                 <View style={styles.delta}>
                     <FlowText style={styles.deltaLabel}>Income:</FlowText>
                     <FlowText style={styles.deltaAmount}>$3670</FlowText>
@@ -48,4 +59,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default BreakdownScreen;
+export default connect(mapStateToProps, mapDispatchToProps)(BreakdownScreen);
